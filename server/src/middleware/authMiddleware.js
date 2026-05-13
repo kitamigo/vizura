@@ -1,0 +1,29 @@
+const jwt = require('jsonwebtoken');
+
+// Protects routes by verifying JWT tokens //
+const protect = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'No token provided' });
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    try { // Verification of the token using teh secret key //
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+};
+
+const managerOnly = (req, res, next) => { // Restricts access to manager-only routes //
+    if (req.user.role !== 'manager') {
+        return res.status(403).json({ message: 'Manager access required' });
+    }
+    next();
+};
+
+module.exports = { protect, managerOnly };
