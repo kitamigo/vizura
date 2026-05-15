@@ -1,33 +1,44 @@
-import { useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Header from './components/Header'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import MainLayout from './components/layout/MainLayout.jsx'
+import Header from './components/layout/Header.jsx'
+
+import Dashboard from './pages/dashboard/Dashboard.jsx'
+import Employee from './pages/employee/Employee.jsx'
+import Payroll from './pages/payroll/Payroll.jsx'
+import Roster from './pages/roster/Roster.jsx'
+import Analytics from './pages/analytics/Analytics.jsx'
+
+import Login from './pages/auth/Login.jsx'
+import Register from './pages/auth/Register.jsx'
 
 function App() {
-
-  const [darkMode, setDarkMode] = useState(false)
-
   return (
-    <div
-      className={
-        darkMode
-          ? 'bg-stone-800 text-white min-h-screen'
-          : 'bg-stone-300 text-black min-h-screen'
-        } 
-    >
-
-      <Header 
-        darkMode={darkMode}
-        setDarkMode={setDarkMode}
-      />
+    <>
+    <Header />
 
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
 
-    </div>
+        {/* Authentication pages */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+
+       {/* Redirect root to login */}
+        <Route path="/" element={<Navigate to="/login" />}/>
+
+        {/* App shell */}
+       <Route path="/app" element={<MainLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="employee" element={<Employee />} />
+          <Route path="payroll" element={<Payroll />} />
+          <Route path="roster" element={<Roster />} />
+          <Route path="analytics" element={<Analytics />} />
+        </Route>
+
+        {/* Fallback */}
+        <Route path="*" element={<div>404 Not Found </div>} />
+
+      </Routes>
+    </>
   )
 }
 
