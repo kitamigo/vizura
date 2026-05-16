@@ -1,18 +1,18 @@
 import { useNavigate } from 'react-router-dom'
-import LoginForm from '../../components/auth/LoginForm'
+import RegisterForm from '../../components/auth/RegisterForm'
 import { useAuth } from '../../context/AuthContext'
 
-function Login() {
+function Register() {
 
   const navigate = useNavigate()
 
-  const { login } = useAuth()
+  const { register } = useAuth()
 
-  const handleLogin = async ({ email, password }) => {
+  const handleRegister = async (formData) => {
 
     try {
 
-      await login(email, password)
+      await register(formData)
 
       navigate('/app/dashboard')
 
@@ -20,15 +20,15 @@ function Login() {
 
       console.error(err)
 
-      alert('Login failed')
+      alert('Registration failed')
     }
   }
 
   return (
     <div className="flex items-center justify-center h-[calc(100vh-64px)] mt-16 bg-stone-300">
-      <LoginForm onSubmit={handleLogin} />
+      <RegisterForm onSubmit={handleRegister} />
     </div>
   )
 }
 
-export default Login
+export default Register
