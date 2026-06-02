@@ -2,9 +2,14 @@ const pool = require('../config/db');
 const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 
+
 // -- REGISTER -- //
 const register = async (req, res) => {
     const { first_name, last_name, email, password, role, business_name } = req.body;
+    
+    if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+    }
 
     try {
         // Checks if the entered email already exists in the database (users table) //

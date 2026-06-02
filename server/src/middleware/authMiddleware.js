@@ -1,6 +1,5 @@
 const jwt = require('jsonwebtoken');
 
-// Protects routes by verifying JWT tokens //
 const protect = (req, res, next) => {
     const authHeader = req.headers.authorization;
 
@@ -10,7 +9,7 @@ const protect = (req, res, next) => {
 
     const token = authHeader.split(' ')[1];
 
-    try { // Verification of the token using teh secret key //
+    try { // Verification of the token using the jwt secret key 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         req.user = decoded;
         next();
@@ -19,7 +18,7 @@ const protect = (req, res, next) => {
     }
 };
 
-const managerOnly = (req, res, next) => { // Restricts access to manager-only routes //
+const managerOnly = (req, res, next) => {
     if (req.user.role !== 'manager') {
         return res.status(403).json({ message: 'Manager access required' });
     }
