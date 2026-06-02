@@ -12,15 +12,21 @@ function Login() {
 
     try {
 
-      await login(email, password)
-
-      navigate('/app/dashboard')
+      const data = await login(email, password)
+      
+      if (
+        data.user.role === 'employer' ||
+        data.user.role === 'employee'
+      ) {
+        navigate('/app/dashboard')
+      }
 
     } catch (err) {
 
       console.error(err)
 
-      alert('Login failed')
+      console.log(err.response)
+      console.log(err.response?.data)
     }
   }
 

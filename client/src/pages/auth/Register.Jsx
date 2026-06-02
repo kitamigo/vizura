@@ -20,7 +20,8 @@ function Register() {
 
       console.error(err)
 
-      alert('Registration failed')
+      console.log(err.response)
+      console.log(err.response?.data)
     }
   }
 
