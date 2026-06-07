@@ -1,4 +1,9 @@
+<<<<<<< Updated upstream
 require('dotenv').config();
+=======
+require('dotenv').config(); // stays at the top - so the DB password is defined before connection is established 
+
+>>>>>>> Stashed changes
 const app = require('./src/app');
 require('./src/config/db');
 
