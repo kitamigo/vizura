@@ -1,4 +1,5 @@
-require('dotenv').config();
+require('dotenv').config(); // First so the DB password is defined before connection is established //
+
 const app = require('./src/app');
 require('./src/config/db');
 
