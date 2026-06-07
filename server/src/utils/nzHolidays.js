@@ -11,10 +11,8 @@ const MATARIKI_DATES = {
   2030: '2030-06-21',
 };
 
-// regional anniversary days
+// regional anniversary days (only Canterbury supported)
 const REGIONAL_ANNIVERSARY = {
-  Auckland: (year) => mondayNearestTo(year, 1, 29),    // nearest Mon to Jan 29
-  Wellington: (year) => mondayNearestTo(year, 1, 22),  // nearest Mon to Jan 22
   Canterbury: (year) => mondayNearestTo(year, 12, 16), // nearest Mon to Dec 16 (Canterbury/Westland)
 };
 

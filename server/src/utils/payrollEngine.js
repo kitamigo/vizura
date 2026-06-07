@@ -1,5 +1,4 @@
 'use strict';
-
 // owp = ordinary weekly pay, awe = average weekly earnings
 
 

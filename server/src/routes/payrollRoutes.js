@@ -10,15 +10,15 @@ const { protect, managerOnly } = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // create a new pay run
-router.post('/payruns', createPayRun);
+router.post('/payruns', protect, managerOnly, createPayRun);
 
 // list all pay runs
-router.get('/payruns', listPayRuns);
+router.get('/payruns', protect, managerOnly, listPayRuns);
 
-// get payslips for an employee
-router.get('/payslips/:employeeId', getPayslips);
+// gets payslips for an employee
+router.get('/payslips/:employeeId', protect, getPayslips);
 
-// download payslip as PDF
-router.get('/payslips/:id/pdf', downloadPayslipPDF);
+// downloads payslip as PDF
+router.get('/payslips/:id/pdf', protect, downloadPayslipPDF);
 
 module.exports = router;
