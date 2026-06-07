@@ -10,6 +10,7 @@ import Analytics from './pages/analytics/Analytics.jsx'
 
 import Login from './pages/auth/Login.jsx'
 import Register from './pages/auth/Register.jsx'
+import ProtectedRoute from './routes/ProtectedRoute.jsx'
 
 function App() {
   return (
@@ -26,12 +27,52 @@ function App() {
         <Route path="/" element={<Navigate to="/login" />}/>
 
         {/* App shell */}
-       <Route path="/app" element={<MainLayout />}>
-          <Route path="dashboard" element={<Dashboard />} />
-          <Route path="employee" element={<Employee />} />
-          <Route path="payroll" element={<Payroll />} />
-          <Route path="roster" element={<Roster />} />
-          <Route path="analytics" element={<Analytics />} />
+        <Route path="/app" element={<MainLayout />}>
+
+          <Route
+            path="dashboard" 
+            element={
+              <ProtectedRoute allowedRoles={['employer', 'employee']}>
+                <Dashboard />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="employee" 
+            element={
+              <ProtectedRoute allowedRoles={['employer', 'employee']}>
+                <Employee />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route
+            path="payroll" 
+            element={
+              <ProtectedRoute allowedRoles={['employee', 'employer']}> 
+                <Payroll />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="roster" 
+            element={
+              <ProtectedRoute allowedRoles={['employee', 'employer']}>
+                <Roster />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="analytics" 
+            element={
+              <ProtectedRoute allowedRoles={['employee', 'employer']}>
+                <Analytics />
+              </ProtectedRoute>
+            } 
+          />
         </Route>
 
         {/* Fallback */}
