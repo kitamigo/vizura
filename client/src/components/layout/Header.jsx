@@ -1,5 +1,6 @@
 import logo from '../../assets/logo_dark.svg'
-import toggleIcon from '../../assets/toggle_dark_mode.svg'
+import toggleDarkIcon from '../../assets/toggle_dark_mode.svg'
+import toggleLightIcon from '../../assets/toggle_light_mode.svg'
 
 function Header() {
   return (
@@ -11,15 +12,25 @@ function Header() {
       </div>
 
       {/* Right: Toggle icon */}
-      <div className="flex items-center">
-        <button>
-          <img
-            src={toggleIcon}
-            alt="Toggle Theme"
-            className="h-12 w-12 cursor-pointer"
-          />
-        </button>
-      </div>
+      return (  
+        <div className="flex items-center">
+          <button>
+            {/* Toggle light mode*/}
+            <img
+              src={toggleDarkIcon}
+              alt="Dark Mode Toggle"
+              className="block dark:hidden w-full max-w-md cursor-pointer"
+            />
+            {/* Toggle light mode*/}
+            <img
+              src={toggleLightIcon}
+              alt="Light Mode Toggle"
+              className="hidden dark:block w-full max-w-md cursor-pointer"
+            />
+          </button>
+        </div>
+      );
+      
 
     </header>
   )
