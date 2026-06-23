@@ -8,5 +8,4 @@ export function Component() {
   );
 }
 
-
 export default Component

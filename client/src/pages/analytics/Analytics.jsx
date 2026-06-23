@@ -3,7 +3,7 @@ import DashboardCard from '../../components/dashboard/DashboardCard'
 import StatCard from '../../components/ui/StatCard'
 import ActionCard from '../../components/ui/ActionCard'
 import ViewCard from '../../components/ui/ViewCard'
-import DatePicker from '../../components/ui/DatePicker'
+import DatePicker from '../../components/ui/DateRangePicker'
 
 
 function analyticsLayout() {
@@ -11,8 +11,8 @@ function analyticsLayout() {
   <div className="space-y-6">
 
       <div className="grid grid-cols-1 min-h-30 md:grid-cols-2 gap-6">
-        <DatePicker/>
-        <Button className="bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl" size="xl">Upload Data</Button>
+        <DatePicker></DatePicker>
+        <Button className="cursor-pointer bg-gradient-to-br from-purple-600 to-blue-500 text-white hover:bg-gradient-to-bl" size="xl">Upload Data</Button>
       </div>
 
       <div className="grid grid-cols-1 min-h-60 md:grid-cols-3 gap-6">

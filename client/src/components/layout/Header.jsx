@@ -12,8 +12,6 @@ function Header() {
   ? 'bg-violet-300'
   : 'bg-slate-700'
 
-
-
   return (
     <header
       className={`
