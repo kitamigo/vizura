@@ -3,7 +3,7 @@ import { Outlet } from 'react-router-dom'
 
 function MainLayout() {
   return (
-    <div className="flex min-h-[calc(100vh-64px)] mt-10 bg-stone-300">
+    <div className="flex min-h-[calc(100vh-64px)] mt-10 bg-background">
       
       {/* Sidebar */}
       <Sidebar />

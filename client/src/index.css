@@ -1,1 +1,61 @@
 @import "tailwindcss";
+
+/* ======================================================
+   Brand Palette (fixed)
+====================================================== */
+
+:root {
+  --eggplant: #6d66c9;
+  --reef: #00aa9f;
+  --bright: #ffffff;
+  --sky: #d9d9d9;
+  --storm: #3a3a3a;
+  --twilight: #282828;
+
+  /* =====================================================
+     Light Theme
+  ===================================================== */
+
+  --background: var(--sky);
+  --surface: var(--bright);
+  --text: var(--twilight);
+  --border: var(--sky);
+
+  --primary: var(--eggplant);
+  --secondary: var(--reef);
+}
+
+.dark {
+  /* =====================================================
+     Dark Theme
+  ===================================================== */
+
+  --background: var(--twilight);
+  --surface: var(--storm);
+  --text: var(--bright);
+  --border: var(--sky);
+
+  --primary: var(--eggplant);
+  --secondary: var(--reef);
+}
+
+@theme {
+  /* Semantic colours */
+
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-text: var(--text);
+  --color-border: var(--border);
+
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
+
+  /* Brand colours */
+
+  --color-eggplant: var(--eggplant);
+  --color-reef: var(--reef);
+  --color-bright: var(--bright);
+  --color-sky: var(--sky);
+  --color-storm: var(--storm);
+  --color-twilight: var(--twilight);
+}

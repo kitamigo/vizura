@@ -1,20 +1,20 @@
 function ActionCard({ title }) {
+
   return (
     <button
       className="
         w-full
-        bg-white
+        bg-surface
         rounded-2xl
-        border
-        border-slate-400
+        border-2
+        border-primary
         shadow-sm
         p-6
         text-center
         hover:shadow-md
-        transition
       "
     >
-      <h2 className="text-lg font-semibold text-slate-800">
+      <h2 className="text-lg font-semibold text-text">
         {title}
       </h2>
     </button>

@@ -5,26 +5,22 @@ function Sidebar() {
 
   const { user } = useAuth()
 
-  const employerTheme = user?.role === 'employer'
-
-  const sidebarBg = employerTheme
-  ? 'bg-violet-300'
-  : 'bg-slate-700'
-
   const navLinkClass = ({ isActive }) =>
     `block px-4 py-2 rounded-lg transition-colors ${
       isActive
-        ? 'bg-indigo-600 text-white'
-        : 'text-gray-700 hover:bg-gray-100'
+        ? 'bg-primary text-bright'
+        : 'text-text hover:bg-background'
     }`
 
    return (
     <aside
       className={`
         fixed left-0 top-16 w-64 h-[calc(100vh-64px)]
-      ${employerTheme ? 'bg-violet-300' : 'bg-stone-200'}
-      border-r border-slate-300
-      flex flex-col
+        bg-surface
+        border-r
+        border-border
+        flex 
+        flex-col
       `}
     >
 
@@ -34,7 +30,7 @@ function Sidebar() {
         {/* GENERAL */}
         <div className="mb-8">
 
-          <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-2">
+          <h2 className="text-xs font-semibold text-text uppercase tracking-wider mb-3 px-2">
             General
           </h2>
 
@@ -52,7 +48,7 @@ function Sidebar() {
         {/* MODULES */}
         <div className="mb-8">
 
-          <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-2">
+          <h2 className="text-xs font-semibold text-text uppercase tracking-wider mb-3 px-2">
             Modules
           </h2>
 
@@ -93,7 +89,7 @@ function Sidebar() {
         {/* SYSTEM */}
         <div className="mb-8">
 
-          <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-2">
+          <h2 className="text-xs font-semibold text-text uppercase tracking-wider mb-3 px-2">
             System
           </h2>
 
@@ -113,12 +109,12 @@ function Sidebar() {
       </div>
 
       {/* Bottom User Profile */}
-      <div className="border-t border-slate-600 px-5 pt-4 pb-6">
+      <div className="border-t border-border px-5 pt-4 pb-6">
 
         <div className="flex items-center gap-3">
 
           {/* Profile Image */}
-          <div className="w-10 h-10 rounded-full bg-gray-300 overflow-hidden">
+          <div className="w-10 h-10 rounded-full bg-background overflow-hidden">
 
             {/* Later replace with actual image */}
             <img
@@ -132,11 +128,11 @@ function Sidebar() {
           {/* User Info */}
           <div>
 
-            <p className="font-medium text-sm text-gray-800">
+            <p className="font-medium text-sm text-text">
               {user?.name || 'User'}
             </p>
 
-            <p className="text-xs text-gray-800">
+            <p className="text-xs text-text">
               {user?.role || 'Member'}
             </p>
 
