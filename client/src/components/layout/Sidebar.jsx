@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 
+
 function Sidebar() {
 
   const { user } = useAuth()

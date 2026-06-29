@@ -14,8 +14,9 @@ import ProtectedRoute from './routes/ProtectedRoute.jsx'
 
 function App() {
   return (
-    <>
-    <Header />
+    <div className="min-h-screen bg-background transition-colors">
+
+      <Header />
 
       <Routes>
 
@@ -79,7 +80,8 @@ function App() {
         <Route path="*" element={<div>404 Not Found </div>} />
 
       </Routes>
-    </>
+      
+    </div>
   )
 }
 

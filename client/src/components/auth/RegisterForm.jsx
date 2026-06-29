@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 function RegisterForm({ onSubmit }) {
+
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -35,19 +36,19 @@ function RegisterForm({ onSubmit }) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white p-10 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4 text-indigo-500">Register</h2>
+    <div className="w-full max-w-md mx-auto bg-surface p-10 rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-4 text-primary">Register</h2>
 
       {/* Divider */}
       <div className="flex items-center gap-4 my-6">
 
-        <div className="flex-1 h-px bg-gray-700" />
+        <div className="flex-1 h-px bg-text" />
 
-        <span className="text-sm text-gray-700 whitespace-nowrap">
+        <span className="text-sm text-text whitespace-nowrap">
           Haere Mai - Welcome to Vizura
         </span>
 
-        <div className="flex-1 h-px bg-gray-700" />
+        <div className="flex-1 h-px bg-text" />
 
       </div>
 
@@ -122,7 +123,7 @@ function RegisterForm({ onSubmit }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-green-700 text-white py-2 rounded hover:bg-indigo-700"
+          className="w-full bg-tertiary text-text py-2 rounded hover:bg-primary"
         >
           {loading ? 'Creating account...' : 'Create Account'}
         </button>

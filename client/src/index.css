@@ -6,7 +6,9 @@
 
 :root {
   --eggplant: #6d66c9;
+  --prince: #4740a3;
   --reef: #00aa9f;
+  --garden: #03a765;
   --bright: #ffffff;
   --sky: #d9d9d9;
   --storm: #3a3a3a;
@@ -22,7 +24,9 @@
   --border: var(--sky);
 
   --primary: var(--eggplant);
+  --primary2: var(--prince);
   --secondary: var(--reef);
+  --tertiary: var(--garden);
 }
 
 .dark {
@@ -36,7 +40,9 @@
   --border: var(--sky);
 
   --primary: var(--eggplant);
+  --primary2: var(--prince);
   --secondary: var(--reef);
+  --tertiary: var(--garden);
 }
 
 @theme {
@@ -48,12 +54,16 @@
   --color-border: var(--border);
 
   --color-primary: var(--primary);
+  --color-primary2: var(--primary2);
   --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
 
   /* Brand colours */
 
   --color-eggplant: var(--eggplant);
+  --color-prince: var(--prince);
   --color-reef: var(--reef);
+  --color-garden: var(--garden);
   --color-bright: var(--bright);
   --color-sky: var(--sky);
   --color-storm: var(--storm);

@@ -5,6 +5,8 @@ import { useAuth } from '../../context/AuthContext'
 function Dashboard() {
   const { user } = useAuth()
 
+  if (loading) return null;
+
   return (
     <div className="p-6">
       <h1 className="text-3xl text-text font-bold mb-4">

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
+
 function LoginForm({ onSubmit }) {
 
   const [email, setEmail] = useState('')
@@ -16,10 +17,10 @@ function LoginForm({ onSubmit }) {
   }
 
   return (
-    <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-sm">
+    <div className="w-full max-w-md bg-surface p-8 rounded-2xl shadow-sm">
 
       {/* Heading */}
-      <h1 className="text-2xl font-bold mb-2 text-indigo-500">
+      <h1 className="text-2xl font-bold mb-2 text-primary">
         Sign In
       </h1>
 
@@ -28,7 +29,7 @@ function LoginForm({ onSubmit }) {
 
         {/* Email */}
         <div>
-          <label className="block text-sm font-medium mb-2 text-gray-700">
+          <label className="block text-sm font-medium mb-2 text-text">
             Email
           </label>
 
@@ -37,14 +38,14 @@ function LoginForm({ onSubmit }) {
             placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
             required
           />
         </div>
 
         {/* Password */}
         <div>
-          <label className="block text-sm font-medium mb-2 text-gray-700">
+          <label className="block text-sm font-medium mb-2 text-text">
             Password
           </label>
 
@@ -53,7 +54,7 @@ function LoginForm({ onSubmit }) {
             placeholder="Enter your password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-indigo-500"
+            className="w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-primary"
             required
           />
 
@@ -62,7 +63,7 @@ function LoginForm({ onSubmit }) {
 
             <button
               type="button"
-              className="text-sm text-green-700 hover:text-indigo-700"
+              className="text-sm text-tertiary hover:text-primary"
             >
               Forgot Password?
             </button>
@@ -73,7 +74,7 @@ function LoginForm({ onSubmit }) {
         {/* Login Button */}
         <button
           type="submit"
-          className="w-full bg-indigo-500 text-white py-3 rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+          className="w-full bg-primary text-text py-3 rounded-xl font-medium hover:bg-primary2 transition-colors"
         >
           Sign In
         </button>
@@ -83,20 +84,20 @@ function LoginForm({ onSubmit }) {
       {/* Divider */}
       <div className="flex items-center gap-4 my-6">
 
-        <div className="flex-1 h-px bg-gray-700" />
+        <div className="flex-1 h-px bg-text" />
 
-        <span className="text-sm text-gray-700 whitespace-nowrap">
+        <span className="text-sm text-text whitespace-nowrap">
           New to Vizura?
         </span>
 
-        <div className="flex-1 h-px bg-gray-700" />
+        <div className="flex-1 h-px bg-text" />
 
       </div>
 
       {/* Create Account */}
       <Link
         to="/register"
-        className="block text-center py-3 rounded-xl font-medium text-green-700 hover:text-indigo-600 transition-colors"
+        className="block text-center py-3 rounded-xl font-medium text-tertiary hover:text-primary transition-colors"
       >
         Create Account
       </Link>

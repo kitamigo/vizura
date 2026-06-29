@@ -14,49 +14,52 @@ const AuthContext = createContext()
 
 export function AuthProvider({ children }) {
 
-  //temporary user values while no DB access
-  const [user, setUser] = useState({
-    id: 1,
-    name: 'Jay Test',
-    role: 'employer'
-  })
+  const [user, setUser] = useState(null)
+  const [token, setToken] =useState(null)
+  const [loading, setLoading] = useState(true)
 
-  //Temporary stasis while testing user systems without DB access
-  // LOAD USER ON REFRESH
-  //useEffect(() => {
-  //  const storedUser = localStorage.getItem('user')
-  //
-  //if (storedUser) {
-  //    setUser(JSON.parse(storedUser))
-  //  }
-  //}, [])
+  //load user on app sart
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user")
+    const storedToken = localStorage.getItem("token")
+
+    if (storedUser && storedToken) {
+      try {
+        setUser(JSON.parse(storedUser))
+        setToken(storedToken)
+      } catch (err) {
+        console.error("Failed to parse stored user:", err)
+        localStorage.removeItem("user")
+        localStorage.removeItem("token")
+      }
+    }
+
+    setLoading(false);
+  }, [])
+
 
   // LOGIN
   const login = async (email, password) => {
-
     const data = await loginUser(email, password)
 
     setUser(data.user)
+    setToken(data.token)
 
-    localStorage.setItem(
-      'user',
-      JSON.stringify(data.user)
-    )
+    localStorage.setItem("user", JSON.stringify(data.user))
+    localStorage.setItem("token", data.token)
 
     return data
   }
 
   // REGISTER
   const register = async (userData) => {
-
     const data = await registerUser(userData)
 
     setUser(data.user)
+    setToken(data.token)
 
-    localStorage.setItem(
-      'user',
-      JSON.stringify(data.user)
-    )
+    localStorage.setItem("user", JSON.stringify(data.user))
+    localStorage.setItem("token", data.token)
 
     return data
   }
@@ -64,17 +67,19 @@ export function AuthProvider({ children }) {
   // LOGOUT
   const logout = () => {
     setUser(null)
-
-    localStorage.removeItem('user')
+    localStorage.removeItem("user")
+    localStorage.removeItem("token")
   }
 
   return (
     <AuthContext.Provider
       value={{
         user,
+        token,
         login,
         register,
-        logout
+        logout,
+        loading
       }}
     >
       {children}

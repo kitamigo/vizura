@@ -7,13 +7,13 @@ function StatCard({ title, value }) {
         rounded-2xl 
         border-2 
         border-primary 
-        text-center 
+        text-center
         shadow-sm 
         p-10
       "
     >
 
-      <p className="text-sm text-black mb-15">
+      <p className="text-sm text-text mb-15">
         {title}
       </p>
 

@@ -1,4 +1,3 @@
-import DashboardCard from '../../components/dashboard/DashboardCard'
 import StatCard from '../../components/ui/StatCard'
 import ActionCard from '../../components/ui/ActionCard'
 import ViewCard from '../../components/ui/ViewCard'

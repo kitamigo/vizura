@@ -26,7 +26,7 @@ function Register() {
   }
 
   return (
-    <div className="flex items-center justify-center h-[calc(100vh-64px)] mt-16 bg-stone-300">
+    <div className="flex items-center justify-center h-[calc(100vh-64px)] mt-16">
       <RegisterForm onSubmit={handleRegister} />
     </div>
   )
