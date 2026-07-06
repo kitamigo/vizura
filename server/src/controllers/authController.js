@@ -22,7 +22,7 @@ const register = async (req, res) => {
             return res.status(400).json({ message: 'Email already in use' });
         }
 
-        // New user insertion to the database (users table) //
+        // New user insertion to the database (users table) // 
         const newUser = await pool.query(
             'INSERT INTO users (first_name, last_name, email, password_hash, role) VALUES ($1, $2, $3, $4, $5) RETURNING *',
             [first_name, last_name, email, await argon2.hash(password), role]
