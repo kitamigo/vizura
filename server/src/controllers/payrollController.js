@@ -13,7 +13,7 @@ async function createPayRun(req, res) {
       });
     }
 
-    // get business and region
+    // Gets business and region //
     const bizResult = await db.query(
       'SELECT business_id, public_holiday_region FROM businesses WHERE user_id = $1',
       [req.user.user_id]
@@ -26,12 +26,15 @@ async function createPayRun(req, res) {
     const { business_id, public_holiday_region } = bizResult.rows[0];
     const region = public_holiday_region || 'Canterbury';
 
-    // fetch employees
+        // Fetchs employees with tax and KiwiSaver details //
     const employeeResult = await db.query(
       `SELECT e.employee_id,
               u.first_name || ' ' || u.last_name AS name,
               e.hourly_rate,
-              e.contract_type
+              e.contract_type,
+              e.tax_code,
+              e.kiwisaver_rate,
+              e.ird_number
        FROM employees e
        JOIN users u ON e.user_id = u.user_id
        WHERE e.employee_id = ANY($1) AND e.business_id = $2`,
@@ -42,7 +45,7 @@ async function createPayRun(req, res) {
       return res.status(404).json({ message: 'No matching employees found for this business' });
     }
 
-    // fetch shifts
+    // Fetchs shifts //
     const shiftResult = await db.query(
       `SELECT employee_id, date, hours_worked
        FROM shifts
@@ -59,10 +62,9 @@ async function createPayRun(req, res) {
         s => String(s.employee_id) === String(emp.employee_id)
       );
 
-      // calculate hours and detect public holidays from shifts
+      // Calculates hours and detects public holidays from shifts //
       let regularHours = 0;
       let overtimeHours = 0;
-      let weeklyHoursTotal = 0;
       const publicHolidays = [];
 
       for (const shift of empShifts) {
@@ -77,12 +79,14 @@ async function createPayRun(req, res) {
         }
       }
 
-      // build objects in the shape the engine expects
+            // Builds objects in the shape the engine expects //
       const engineEmployee = {
         hourlyRate: parseFloat(emp.hourly_rate),
         employmentType: emp.contract_type,
         wageType: 'adult',
         usualDaysPerWeek: 5,
+        taxCode: emp.tax_code || 'M',
+        kiwisaverRate: emp.kiwisaver_rate != null ? parseFloat(emp.kiwisaver_rate) : null,
       };
 
       const enginePayPeriod = {
@@ -94,9 +98,53 @@ async function createPayRun(req, res) {
         awe: parseFloat(emp.hourly_rate) * 40,
       };
 
-      const result = calcPayRun(engineEmployee, enginePayPeriod);
+      // Fetch YTD values from the most recent payslip for this employee //
+      let ytdGross = 0;
+      let ytdPAYE = 0;
+      let ytdKiwiSaver = 0;
+      const ytdResult = await db.query(
+        `SELECT ytd_gross, ytd_paye, ytd_kiwisaver FROM payslips
+         WHERE employee_id = $1 ORDER BY payslip_id DESC LIMIT 1`,
+        [emp.employee_id]
+      );
+      if (ytdResult.rows.length) {
+        ytdGross = parseFloat(ytdResult.rows[0].ytd_gross) || 0;
+        ytdPAYE = parseFloat(ytdResult.rows[0].ytd_paye) || 0;
+        ytdKiwiSaver = parseFloat(ytdResult.rows[0].ytd_kiwisaver) || 0;
+      }
+
+      // Wage error handling so an incorrect employee setup doesnt break pay run //
+      let result;
+      try {
+        result = calcPayRun(engineEmployee, enginePayPeriod, { ytdGross, ytdPAYE, ytdKiwiSaver });
+      } catch (wageError) {
+        results.push({ employee_id: emp.employee_id, name: emp.name, error: wageError.message });
+        continue;
+      }
+
+      // Persist payslip with updated YTD totals //
+      const newYtdGross = ytdGross + result.grossPay;
+      const newYtdPAYE = ytdPAYE + result.payeTax;
+      const newYtdKiwiSaver = ytdKiwiSaver + result.kiwisaverEmployee;
+
+      const persistResult = await db.query(
+        `INSERT INTO payslips
+         (employee_id, business_id, pay_period_start, pay_period_end,
+          gross_pay, paye_tax, kiwisaver_employee, kiwisaver_employer,
+          total_deductions, net_pay,
+          ytd_gross, ytd_paye, ytd_kiwisaver)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+         RETURNING payslip_id`,
+        [
+          emp.employee_id, business_id, start, end,
+          result.grossPay, result.payeTax, result.kiwisaverEmployee, result.kiwisaverEmployer,
+          result.totalDeductions, result.netPay,
+          newYtdGross, newYtdPAYE, newYtdKiwiSaver
+        ]
+      );
 
       results.push({
+        payslip_id: persistResult.rows[0].payslip_id,
         employee_id: emp.employee_id,
         name: emp.name,
         ...result,
@@ -110,6 +158,11 @@ async function createPayRun(req, res) {
     res.status(500).json({ error: error.message });
   }
 }
+
+async function downloadPayslipPDF(req, res) {
+  res.status(501).json({ error: 'PDF generation not yet implemented' });
+}
+
 async function listPayRuns(req, res) {
   res.json({ payRuns: [] });
 }
@@ -118,8 +171,8 @@ async function getPayslips(req, res) {
   res.json({ payslips: [] });
 }
 
-async function downloadPayslipPDF(req, res) {
-  res.json({ message: 'PDF generation coming soon' });
+async function generatePayslipPDFFromRequest(req, res) {
+  res.status(501).json({ error: 'PDF generation not yet implemented' });
 }
 
 module.exports = {
@@ -127,4 +180,5 @@ module.exports = {
   listPayRuns,
   getPayslips,
   downloadPayslipPDF,
+  generatePayslipPDFFromRequest,
 };

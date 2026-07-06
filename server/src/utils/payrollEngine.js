@@ -8,6 +8,17 @@ const CASUAL_HOLIDAY_PAY = 0.08;
 const PERMANENT_HOLIDAY_PAY = 4 / 52;
 const PUBLIC_HOLIDAY_PAY = 1.5;
 
+// PAYE tax brackets 
+const PAYE_BRACKETS = [
+  { min: 0, max: 14000, rate: 0.105 },
+  { min: 14000, max: 48000, rate: 0.175 },
+  { min: 48000, max: 70000, rate: 0.30 },
+  { min: 70000, max: 180000, rate: 0.33 },
+  { min: 180000, max: Infinity, rate: 0.39 },
+];
+
+const KIWISAVER_MINIMUM_EMPLOYER = 0.035; // 3.5% employer contribution (not deducted from employee)
+
 // rounds dollars to cents (i.e. 101.235 = 101.24)
 const roundCurrency = (amount) => Math.round(amount * 100) / 100;
 
@@ -72,7 +83,7 @@ const calcAllPublicHolidayPay = (publicHolidays, hourlyRate) => {
 
 // -- LEAVE PAY -- //
 const calcLeavePay = (leaveDays, owp, awe, usualDaysPerWeek = 5) => {
-  // apply the greater-of rule - protects employees with variable or increasing earnings
+  // applies the greater-of rule (protects employees with variying/increasing earnings)
   const weeklyRate = Math.max(owp, awe);
   const rateUsed = weeklyRate === owp ? 'OWP' : 'AWE';
 
@@ -94,7 +105,7 @@ const calcHolidayPayAccrued = (employmentType, grossEarnings, hoursWorked) => {
     };
   }
 
-  // permanent employees accrue leave hours — controller writes these to leave_balances
+  // permanent employees accrue leave hours (controller writes these to leave_balances)
   const leaveHoursAccrued = roundCurrency(hoursWorked * PERMANENT_HOLIDAY_PAY);
   return {
     holidayPayAddition: 0,
@@ -102,9 +113,51 @@ const calcHolidayPayAccrued = (employmentType, grossEarnings, hoursWorked) => {
   };
 };
 
+// -- KIWISAVER CALCULATION -- //
+// Returns employee KiwiSaver deduction if rate is set (null rate = not enrolled)
+const calcKiwiSaver = (grossPay, kiwisaverRate) => {
+  if (kiwisaverRate == null) {
+    return {
+      kiwisaverEmployee: 0,
+      kiwisaverEmployer: 0,
+    };
+  }
+  const rate = Math.min(kiwisaverRate, 10);
+  const employee = roundCurrency(grossPay * (rate / 100));
+  const employer = roundCurrency(grossPay * KIWISAVER_MINIMUM_EMPLOYER);
+  return { kiwisaverEmployee: employee, kiwisaverEmployer: employer };
+};
 
-// -- MAIN PAY RUN CALCULATION -- //
-const calcPayRun = (employee, payPeriod) => {
+// -- PAYE TAX CALCULATION -- //
+const calcPAYETax = (grossPay, taxCode = 'M', ytdGross = 0) => {
+  if (grossPay <= 0) return 0;
+
+  // Estimate annual income
+  const annualisedIncome = ytdGross > 0
+    ? ytdGross + grossPay
+    : grossPay * 52;
+
+  // Calculate annual tax
+  let annualTax = 0;
+  let remainingAnnualIncome = annualisedIncome;
+  for (const bracket of PAYE_BRACKETS) {
+    if (remainingAnnualIncome <= 0) break;
+    const taxableInBracket = Math.min(remainingAnnualIncome, bracket.max - bracket.min);
+    annualTax += taxableInBracket * bracket.rate;
+    remainingAnnualIncome -= taxableInBracket;
+  }
+  annualTax = roundCurrency(annualTax);
+
+  // Convert back to period tax
+  const periodTax = roundCurrency(annualTax / 52);
+
+  return Math.max(0, periodTax);
+};
+
+
+// -- MAIN PAY RUN CALCULATION (extended with deductions) -- //
+const calcPayRun = (employee, payPeriod, options = {}) => {
+  const { ytdGross = 0, ytdPAYE = 0, ytdKiwiSaver = 0 } = options;
   // validates minimum wage compliance before any calculation runs
   validateMinWage(employee.hourlyRate, employee.wageType || 'adult');
 
@@ -146,8 +199,17 @@ const calcPayRun = (employee, payPeriod) => {
     totalHoursWorked
   );
 
-  // gross pay returned to controller — PAYE is not applied here
-  const grossPay = roundCurrency(preAccrualGross + holidayPayAddition);
+    const grossPay = roundCurrency(preAccrualGross + holidayPayAddition);
+
+  // --- Deductions ---
+  const taxCode = employee.taxCode || 'M';
+  const kiwisaverRate = employee.kiwisaverRate != null ? employee.kiwisaverRate : null;
+
+  const payeTax = calcPAYETax(grossPay, taxCode, ytdGross);
+  const { kiwisaverEmployee, kiwisaverEmployer } = calcKiwiSaver(grossPay, kiwisaverRate);
+
+  const totalDeductions = roundCurrency(payeTax + kiwisaverEmployee);
+  const netPay = roundCurrency(grossPay - totalDeductions);
 
   return {
     // pay components
@@ -159,10 +221,16 @@ const calcPayRun = (employee, payPeriod) => {
     leaveRateUsed,
     holidayPayAddition,
     grossPay,
+    // deductions
+    payeTax,
+    kiwisaverEmployee,
+    kiwisaverEmployer,
+    totalDeductions,
+    netPay,
     // accruals
     leaveHoursAccrued,
     alternativeHolidaysEarned,
-    // other details for record-keeping
+    // other details
     totalHoursWorked,
     employmentType: employee.employmentType,
   };
@@ -170,14 +238,14 @@ const calcPayRun = (employee, payPeriod) => {
 
 module.exports = {
   calcPayRun,
-  // exported individually so each function can be unit tested in isolation
   calcGrossPay,
   calcPublicHolidayPay,
   calcAllPublicHolidayPay,
   calcLeavePay,
   calcHolidayPayAccrued,
+  calcPAYETax,
+  calcKiwiSaver,
   validateMinWage,
-  // consts exported for use in controller and tests
   MIN_WAGE_ADULT,
   MIN_WAGE_STARTING,
 };
