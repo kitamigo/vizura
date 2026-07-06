@@ -1,14 +1,8 @@
-<<<<<<< Updated upstream
-import logo from '../../assets/logo_dark.svg'
-import toggleIcon from '../../assets/toggle_dark_mode.svg'
-import { useAuth } from '../../context/AuthContext'
-=======
 import { useEffect, useState } from 'react'
 import logoDark from '../../assets/logo_dark.svg'
 import logoLight from '../../assets/logo_light.svg'
 import toggleDarkIcon from '../../assets/toggle_dark_mode.svg'
 import toggleLightIcon from '../../assets/toggle_light_mode.svg'
->>>>>>> Stashed changes
 
 function Header() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
@@ -21,13 +15,6 @@ function Header() {
       return true
     }
 
-<<<<<<< Updated upstream
-  const employerTheme = user?.role === 'employer'
-
-  const headerBg = employerTheme
-  ? 'bg-violet-300'
-  : 'bg-slate-700'
-=======
     if (theme === 'light') {
       return false
     }
@@ -43,19 +30,13 @@ function Header() {
 
   const logo = isDarkMode ? logoLight : logoDark
   const toggleIcon = isDarkMode ? toggleLightIcon : toggleDarkIcon
->>>>>>> Stashed changes
 
   return (
     <header
       className={`
         fixed top-0 left-0 w-full h-16
-<<<<<<< Updated upstream
-        ${employerTheme ? 'bg-violet-300' : 'bg-stone-200'}
-        border-b border-slate-300
-=======
         bg-sky-200 text-slate-900 dark:bg-slate-900 dark:text-slate-100
         border-b border-slate-300 dark:border-slate-800
->>>>>>> Stashed changes
         flex items-center justify-between px-6 z-50
         transition-colors duration-200
       `}
@@ -66,12 +47,6 @@ function Header() {
       </div>
 
       <div className="flex items-center">
-<<<<<<< Updated upstream
-        <button>
-          <img
-            src={toggleIcon}
-            alt="Toggle Theme"
-=======
         <button
           type="button"
           onClick={() => setIsDarkMode((cur) => !cur)}
@@ -83,7 +58,6 @@ function Header() {
             src={toggleIcon}
             alt=""
             aria-hidden="true"
->>>>>>> Stashed changes
             className="h-12 w-12 cursor-pointer"
           />
         </button>
