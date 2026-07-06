@@ -1,46 +1,66 @@
-import { useState } from "react";
 import { Datepicker } from "flowbite-react";
 
-export function DateRangePicker({ onRangeChange }) {
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+export function DateRangePicker({ startDate, endDate, onRangeChange }) {
+  const today = new Date();
+  const datepickerTheme = {
+    root: {
+      input: {
+        field: {
+          input: {
+            base: "block w-full rounded-lg border border-sky-200 bg-sky-50 text-slate-900 focus:border-sky-300 focus:outline-none focus:ring-1 focus:ring-sky-200 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-slate-600 dark:focus:ring-slate-700",
+          },
+        },
+      },
+    },
+  };
+
   const handleStartChange = (date) => {
-    setStartDate(date);
-    if (onRangeChange) {
-      onRangeChange({ start: date, end: endDate });
-    }
+    const nextStartDate = date;
+    const nextEndDate = endDate && date && date > endDate ? date : endDate;
+
+    onRangeChange?.({
+      startDate: nextStartDate,
+      endDate: nextEndDate,
+    });
   };
 
   const handleEndChange = (date) => {
-    setEndDate(date);
-    if (onRangeChange) {
-      onRangeChange({ start: startDate, end: date });
-    }
+    const nextEndDate = date;
+    const nextStartDate = startDate && date && date < startDate ? date : startDate;
+
+    onRangeChange?.({
+      startDate: nextStartDate,
+      endDate: nextEndDate,
+    });
   };
 
   return (
-    <div className="flex flex-col sm:flex-row gap-10 items-center w-full max-w-md">
-      <div className="w-full">
-        <span className="block mb-2 text-sm font-medium">
+    <div className="relative z-50 grid gap-4 overflow-visible sm:grid-cols-2">
+      <div className="relative z-50 w-full overflow-visible">
+        <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-700 dark:text-slate-300">
           From
         </span>
         <Datepicker
-          value={startDate || undefined}   
-          onSelectedDateChanged={handleStartChange}
-          maxDate={endDate || undefined}
+          theme={datepickerTheme}
+          value={startDate || null}
+          onChange={handleStartChange}
+          maxDate={endDate || today}
+          showTodayButton
           placeholder="Select start date"
         />
       </div>
 
-      <div className="w-full">
-        <span className="block mb-2 text-sm font-medium">
+      <div className="relative z-50 w-full overflow-visible">
+        <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-slate-700 dark:text-slate-300">
           To
         </span>
         <Datepicker
-          value={endDate || undefined}
-          onSelectedDateChanged={handleEndChange}
+          theme={datepickerTheme}
+          value={endDate || null}
+          onChange={handleEndChange}
           minDate={startDate || undefined}
-          maxDate={new Date()} 
+          maxDate={new Date()}
+          showTodayButton
           placeholder="Select end date"
         />
       </div>
