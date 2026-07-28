@@ -174,16 +174,18 @@ class AnomalyDetector:
     # EXPLANATION & SUMMARISING
     def _explain(self, date, value, expected, deviation, severity):
         ds = date.strftime("%d %B %Y")
+        # guard against None expected value in early rolling window rows
+        expected_str = f"${expected:,.2f}" if expected is not None else "unknown"
         if severity == "critical":
             if deviation > 0:
-                return f"Critical anomaly on {ds}: revenue was ${value:,.2f}, {deviation:.0f}% above expected (${expected:,.2f}). Significant spike."
+                return f"Critical anomaly on {ds}: revenue was ${value:,.2f}, {deviation:.0f}% above expected ({expected_str}). Significant spike."
             else:
-                return f"Critical anomaly on {ds}: revenue was ${value:,.2f}, {abs(deviation):.0f}% below expected (${expected:,.2f}). Significant dip."
+                return f"Critical anomaly on {ds}: revenue was ${value:,.2f}, {abs(deviation):.0f}% below expected ({expected_str}). Significant dip."
         else:
             if deviation > 0:
-                return f"Warning on {ds}: revenue was ${value:,.2f}, {deviation:.0f}% above expected (${expected:,.2f}). May warrant investigation."
+                return f"Warning on {ds}: revenue was ${value:,.2f}, {deviation:.0f}% above expected ({expected_str}). May warrant investigation."
             else:
-                return f"Warning on {ds}: revenue was ${value:,.2f}, {abs(deviation):.0f}% below expected (${expected:,.2f}). May warrant investigation."
+                return f"Warning on {ds}: revenue was ${value:,.2f}, {abs(deviation):.0f}% below expected ({expected_str}). May warrant investigation."
 
     def _summarise(self, found, total, anomalies):
         if found == 0:

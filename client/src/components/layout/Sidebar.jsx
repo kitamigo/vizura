@@ -5,27 +5,21 @@ function Sidebar() {
 
   const { user } = useAuth()
 
-  const employerTheme = user?.role === 'employer'
-
-  const sidebarBg = employerTheme
-  ? 'bg-violet-300'
-  : 'bg-slate-700'
-
   const navLinkClass = ({ isActive }) =>
     `block px-4 py-2 rounded-lg transition-colors ${
       isActive
         ? 'bg-indigo-600 text-white'
-        : 'text-gray-700 hover:bg-gray-100'
+        : 'text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
     }`
 
    return (
     <aside
-      className={`
+      className="
         fixed left-0 top-16 w-64 h-[calc(100vh-64px)]
-      ${employerTheme ? 'bg-violet-300' : 'bg-stone-200'}
-      border-r border-slate-300
-      flex flex-col
-      `}
+        bg-stone-200 dark:bg-slate-800
+        border-r border-slate-300 dark:border-slate-700
+        flex flex-col
+      "
     >
 
       {/* Navigation */}
@@ -34,7 +28,7 @@ function Sidebar() {
         {/* GENERAL */}
         <div className="mb-8">
 
-          <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-2">
+          <h2 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3 px-2">
             General
           </h2>
 
@@ -52,7 +46,7 @@ function Sidebar() {
         {/* MODULES */}
         <div className="mb-8">
 
-          <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-2">
+          <h2 className="text-xs font-semibold text-gray-600 dark:text-gray-400 uppercase tracking-wider mb-3 px-2">
             Modules
           </h2>
 
@@ -66,54 +60,21 @@ function Sidebar() {
             </NavLink>
 
             <NavLink
-              to="/app/roster"
-              className={navLinkClass}
-            >
-              Rostering
-            </NavLink>
-
-            <NavLink
               to="/app/payroll"
               className={navLinkClass}
             >
               Payroll
             </NavLink>
 
-            <NavLink
-              to="/app/employee"
-              className={navLinkClass}
-            >
-              Employee Management
-            </NavLink>
-
           </div>
 
         </div>
 
-        {/* SYSTEM */}
-        <div className="mb-8">
-
-          <h2 className="text-xs font-semibold text-gray-600 uppercase tracking-wider mb-3 px-2">
-            System
-          </h2>
-
-          <div className="space-y-1">
-
-            <NavLink
-              to="/app/settings"
-              className={navLinkClass}
-            >
-              Settings
-            </NavLink>
-
-          </div>
-
-        </div>
 
       </div>
 
       {/* Bottom User Profile */}
-      <div className="border-t border-slate-600 px-5 pt-4 pb-6">
+      <div className="border-t border-slate-300 dark:border-slate-700 px-5 pt-4 pb-6">
 
         <div className="flex items-center gap-3">
 
@@ -132,11 +93,11 @@ function Sidebar() {
           {/* User Info */}
           <div>
 
-            <p className="font-medium text-sm text-gray-800">
+            <p className="font-medium text-sm text-gray-800 dark:text-gray-200">
               {user?.name || 'User'}
             </p>
 
-            <p className="text-xs text-gray-800">
+            <p className="text-xs text-gray-800 dark:text-gray-400">
               {user?.role || 'Member'}
             </p>
 

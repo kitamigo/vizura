@@ -5,6 +5,7 @@ const {
   runForecast,
   getAnomalies,
   uploadCsv,
+  getRevenueTrend,
 } = require('../controllers/analyticsController');
 
 const router = express.Router();
@@ -21,5 +22,8 @@ router.post('/forecast', runForecast);
 
 // Gets anomalies from the latest upload
 router.get('/anomalies', getAnomalies);
+
+// Gets real historical revenue trend
+router.get('/revenue-trend', getRevenueTrend);
 
 module.exports = router;

@@ -74,12 +74,17 @@ const login = async (req, res) => {
             [email]
         );
 
+        console.log('Login attempt for:', JSON.stringify(email));
+        console.log('Rows found:', result.rows.length);
+
         if (result.rows.length === 0) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const user = result.rows[0];
+        console.log('Stored hash:', user.password_hash);
         const isMatch = await argon2.verify(user.password_hash, password);
+        console.log('Password match:', isMatch);
 
         if (!isMatch) {
             return res.status(401).json({ message: 'Invalid email or password' });

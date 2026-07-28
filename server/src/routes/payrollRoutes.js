@@ -4,6 +4,7 @@ const {
   listPayRuns,
   getPayslips,
   downloadPayslipPDF,
+  generatePayslipPDFFromRequest,
 } = require('../controllers/payrollController');
 const { protect, managerOnly } = require('../middleware/authMiddleware');
 
@@ -21,4 +22,6 @@ router.get('/payslips/:employeeId', protect, getPayslips);
 // downloads payslip as PDF
 router.get('/payslips/:id/pdf', protect, downloadPayslipPDF);
 
+// generates payslip PDF from request (pay run + PDF)
+router.post('/payslips/generate', generatePayslipPDFFromRequest)
 module.exports = router;

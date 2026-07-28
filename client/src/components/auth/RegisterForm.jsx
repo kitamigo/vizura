@@ -35,19 +35,19 @@ function RegisterForm({ onSubmit }) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto bg-white p-10 rounded-lg shadow">
-      <h2 className="text-2xl font-bold mb-4 text-indigo-500">Register</h2>
+    <div className="w-full max-w-md mx-auto bg-white dark:bg-slate-800 p-10 rounded-lg shadow transition-colors duration-200">
+      <h2 className="text-2xl font-bold mb-4 text-indigo-500 dark:text-indigo-400">Register</h2>
 
       {/* Divider */}
       <div className="flex items-center gap-4 my-6">
 
-        <div className="flex-1 h-px bg-gray-700" />
+        <div className="flex-1 h-px bg-gray-300 dark:bg-gray-600" />
 
-        <span className="text-sm text-gray-700 whitespace-nowrap">
+        <span className="text-sm text-gray-700 dark:text-gray-400 whitespace-nowrap">
           Haere Mai - Welcome to Vizura
         </span>
 
-        <div className="flex-1 h-px bg-gray-700" />
+        <div className="flex-1 h-px bg-gray-300 dark:bg-gray-600" />
 
       </div>
 
@@ -60,7 +60,7 @@ function RegisterForm({ onSubmit }) {
         <input
           name="first_name"
           placeholder="First Name"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded"
           value={formData.first_name}
           onChange={handleChange}
           required
@@ -69,7 +69,7 @@ function RegisterForm({ onSubmit }) {
         <input
           name="last_name"
           placeholder="Last Name"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded"
           value={formData.last_name}
           onChange={handleChange}
           required
@@ -79,7 +79,7 @@ function RegisterForm({ onSubmit }) {
           name="email"
           type="email"
           placeholder="Email"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded"
           value={formData.email}
           onChange={handleChange}
           required
@@ -89,7 +89,7 @@ function RegisterForm({ onSubmit }) {
           name="password"
           type="password"
           placeholder="Password"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded"
           value={formData.password}
           onChange={handleChange}
           required
@@ -98,7 +98,7 @@ function RegisterForm({ onSubmit }) {
         {/* Role selector */}
         <select
           name="role"
-          className="w-full p-2 border rounded"
+          className="w-full p-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded"
           value={formData.role}
           onChange={handleChange}
         >
@@ -111,7 +111,7 @@ function RegisterForm({ onSubmit }) {
           <input
             name="business_name"
             placeholder="Business Name"
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-700 text-gray-900 dark:text-gray-100 rounded"
             value={formData.business_name}
             onChange={handleChange}
             required
@@ -122,7 +122,7 @@ function RegisterForm({ onSubmit }) {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-green-700 text-white py-2 rounded hover:bg-indigo-700"
+          className="w-full bg-green-700 dark:bg-green-600 text-white py-2 rounded hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors"
         >
           {loading ? 'Creating account...' : 'Create Account'}
         </button>

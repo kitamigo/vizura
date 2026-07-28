@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import DatePicker from '../../components/ui/DateRangePicker'
 import { Button } from 'flowbite-react'
 import { AnalyticsNlqPanel } from './AnalyticsNlqPanel'
-import { ForecastBandChart, ForecastTrendChart } from './AnalyticsCharts'
+import { ForecastBandChart, ForecastTrendChart, formatDDMMYY } from './AnalyticsCharts'
 import { useAnalyticsData } from './useAnalyticsData'
 
 const analyticsButtonClass = 'cursor-pointer rounded-2xl border border-transparent bg-sky-500 px-4 py-2 text-white shadow-sm transition hover:bg-sky-400 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 active:translate-y-px active:shadow-[inset_0_2px_10px_rgba(15,23,42,0.22)] disabled:cursor-not-allowed'
@@ -34,6 +34,7 @@ function AnalyticsShell({ dateRange, setDateRange }) {
     queryResult,
     queryText,
     refreshAnomalies,
+    revenueTrendPts,
     runSavedForecast,
     setCsvFile,
     setQueryText,
@@ -133,25 +134,33 @@ function AnalyticsShell({ dateRange, setDateRange }) {
                 {loadingAnomalies ? 'Refreshing...' : 'Refresh anomalies'}
               </Button>
             </div>
-            <div className="mt-4 overflow-hidden rounded-2xl border border-sky-100 dark:border-white/10">
+           <div className="mt-4 overflow-hidden rounded-2xl border border-sky-100 dark:border-white/10">
               <table className="w-full text-left text-sm">
-                <thead className="bg-sky-50 text-sky-900 dark:bg-slate-900/70 dark:text-slate-200">
+                <thead className="sticky top-0 bg-sky-50 text-sky-900 dark:bg-slate-900/70 dark:text-slate-200">
                   <tr>
                     <th className="px-4 py-3 font-semibold">Date</th>
-                    <th className="px-4 py-3 font-semibold">Type</th>
+                    <th className="px-4 py-3 font-semibold">Revenue</th>
+                    <th className="px-4 py-3 font-semibold">Event</th>
                     <th className="px-4 py-3 font-semibold">Severity</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-sky-100 bg-white dark:divide-white/10 dark:bg-slate-950/40">
-                  {anomalies.length ? anomalies.map((it) => (
-                    <tr key={`${it.date}-${it.type}`} className={it.severity === 'high' ? 'bg-rose-50/70 dark:bg-rose-950/20' : ''}>
-                      <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{it.date}</td>
-                      <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{it.type}</td>
-                      <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{it.severity}</td>
-                    </tr>
-                  )) : null}
-                </tbody>
               </table>
+              <div className="max-h-[220px] overflow-y-auto">
+                <table className="w-full text-left text-sm">
+                  <tbody className="divide-y divide-sky-100 bg-white dark:divide-white/10 dark:bg-slate-950/40">
+                    {anomalies.length ? anomalies.map((it) => (
+                      <tr key={`${it.date}-${it.type}`} className={it.severity === 'high' ? 'bg-rose-50/70 dark:bg-rose-950/20' : ''}>
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{formatDDMMYY(it.date)}</td>
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-200">
+                          ${it.value?.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        </td>
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{it.holiday_name || '—'}</td>
+                        <td className="px-4 py-3 text-slate-700 dark:text-slate-200">{it.severity}</td>
+                      </tr>
+                    )) : null}
+                  </tbody>
+                </table>
+              </div>
               {!anomalies.length ? (
                 <div className="border-t border-sky-100 bg-white px-4 py-3 text-sm text-slate-500 dark:border-white/10 dark:bg-slate-950/40 dark:text-slate-300">
                   Upload a CSV to generate anomaly flags from your model.
@@ -167,19 +176,27 @@ function AnalyticsShell({ dateRange, setDateRange }) {
               <div>
                 <h2 className="text-base font-semibold text-slate-900 dark:text-white">Revenue trend</h2>
                 <p className="mt-1 text-sm text-slate-600 dark:text-sky-100/70">
-                  Revenue movement across the uploaded model output.
+                  Revenue trend across the selected date range.
                 </p>
               </div>
             </div>
             <div className="mt-5 rounded-2xl bg-sky-50/70 p-4 dark:bg-slate-900/40">
-              <ForecastTrendChart data={forecastPts} />
+              <ForecastTrendChart data={revenueTrendPts} />
             </div>
           </article>
 
           <article className="rounded-[26px] border border-sky-200/80 bg-white/80 p-5 shadow-lg shadow-sky-200/40 backdrop-blur-md transition-colors duration-200 dark:border-white/15 dark:bg-white/10 dark:shadow-none">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <h2 className="text-base font-semibold text-slate-900 dark:text-white">Forecast chart</h2>
+                <div className="flex items-center gap-1.5">
+                  <h2 className="text-base font-semibold text-slate-900 dark:text-white">Forecast chart</h2>
+                  <span
+                    className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full bg-sky-200 text-[10px] font-bold text-sky-800 dark:bg-sky-800 dark:text-sky-100"
+                    title="The confidence band (shaded area) shows the range the model expects actual revenue to fall within. A narrower band means the model is more certain; a wider band means more uncertainty in that prediction."
+                  >
+                    ?
+                  </span>
+                </div>
                 <p className="mt-1 text-sm text-slate-600 dark:text-sky-100/70">
                   Predicted revenue with confidence band.
                 </p>

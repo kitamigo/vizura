@@ -10,4 +10,9 @@ function Analytics() {
   return <AnalyticsShell dateRange={dateRange} setDateRange={setDateRange} />
 }
 
+export async function fetchRevenueTrend(params) {
+  const { data } = await api.get('/analytics/revenue-trend', { params })
+  return data
+}
+
 export default Analytics

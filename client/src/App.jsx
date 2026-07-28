@@ -13,7 +13,7 @@ import ProtectedRoute from './routes/ProtectedRoute.jsx'
 function App() {
   return (
     <>
-    <Header />
+      <Header />
 
       <Routes>
 
@@ -21,42 +21,43 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-       {/* Redirect root to login */}
-        <Route path="/" element={<Navigate to="/login" />}/>
+        {/* Redirect root to login */}
+        <Route path="/" element={<Navigate to="/login" />} />
 
         {/* App shell */}
         <Route path="/app" element={<MainLayout />}>
 
           <Route
-            path="dashboard" 
+            path="dashboard"
             element={
-              <ProtectedRoute allowedRoles={['employer', 'employee']}>
+              <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
-            } 
+            }
           />
 
           <Route
-            path="payroll" 
+            path="analytics"
             element={
-              <ProtectedRoute allowedRoles={['employee', 'employer']}> 
-                <Payroll />
-              </ProtectedRoute>
-            } 
-          />
-
-          <Route 
-            path="analytics" 
-            element={
-              <ProtectedRoute allowedRoles={['employee', 'employer']}>
+              <ProtectedRoute>
                 <Analytics />
               </ProtectedRoute>
-            } 
+            }
           />
+
+          <Route
+            path="payroll"
+            element={
+              <ProtectedRoute>
+                <Payroll />
+              </ProtectedRoute>
+            }
+          />
+
         </Route>
 
         {/* Fallback */}
-        <Route path="*" element={<div>404 Not Found </div>} />
+        <Route path="*" element={<div>404 Not Found</div>} />
 
       </Routes>
     </>

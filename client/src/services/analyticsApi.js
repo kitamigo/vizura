@@ -18,7 +18,7 @@ export async function fetchAnomalies(params) {
 
 export async function uploadAnalyticsCsv(formData) {
   const { data } = await api.post('/analytics/upload', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' },
+    headers: { 'Content-Type': undefined },
   })
   return data
 }
@@ -31,5 +31,10 @@ export async function runNlqQuery(payload) {
 
 export async function fetchNlqHistory() {
   const { data } = await api.get('/nlq/history')
+  return data
+}
+
+export async function fetchRevenueTrend(params) {
+  const { data } = await api.get('/analytics/revenue-trend', { params })
   return data
 }

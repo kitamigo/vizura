@@ -32,9 +32,11 @@ function buildDatabaseFromCsv(csvContent) {
 
   const insertMany = db.transaction((rows) => {
     for (const row of rows) {
-      const cols = row.split(',')
-      // Pads missing columns with empty strings
+      let cols = row.split(',')
       while (cols.length < rawHeaders.length) cols.push('')
+      if (cols.length > rawHeaders.length) {
+        cols = cols.slice(0, rawHeaders.length - 1).concat(cols.slice(rawHeaders.length - 1).join(','))
+      }
       insertStmt.run(...cols.map(c => c.trim()))
     }
   })
@@ -48,7 +50,6 @@ function executeQuery(db, sql) {
   if (!db || !sql) return []
 
   try {
-    // Only allows SELECT statements for safety
     const trimmed = sql.trim().toUpperCase()
     if (!trimmed.startsWith('SELECT')) {
       return []
@@ -97,7 +98,7 @@ function normalizeNlqResponse(source, question) {
   }
 }
 
-// Calls the AI service NLQ endpoint (FastAPI: POST /nlquery/query) //
+// Calls the AI service NLQ endpoint
 async function callNlqModel(question) {
   const modelUrl = process.env.NLQ_MODEL_URL || 'http://localhost:8000/nlquery/query'
 
@@ -139,7 +140,7 @@ async function queryNlq(req, res) {
   try {
     const modelResponse = await callNlqModel(question)
 
-    // Returns a pending response when the model is not connected //
+    // Returns a pending response when the model is not connected
     if (!modelResponse) {
       return res.status(202).json({
         question,
@@ -155,7 +156,7 @@ async function queryNlq(req, res) {
     const source = modelResponse?.data || modelResponse || {}
     const generatedSql = source.sql || ''
 
-    // Execute SQL against in-memory DB built from uploaded CSV
+    // Execute SQL against in-memory DB built from the uploaded CSV
     let rows = []
     let answer = source.answer || ''
 
@@ -166,13 +167,34 @@ async function queryNlq(req, res) {
       if (csvContent) {
         const db = buildDatabaseFromCsv(csvContent)
         if (db) {
-          rows = executeQuery(db, generatedSql)
+          const columnMap = {
+            revenue: 'revenue_nzd',
+            amount: 'revenue_nzd',
+            value: 'revenue_nzd',
+            payslip: 'payslip_total_nzd',
+            payslip_amount: 'payslip_total_nzd',
+            shift_hours: 'total_shift_hours',
+            hours: 'total_shift_hours',
+            staff: 'staff_count',
+            employees: 'staff_count',
+            public_holiday: 'is_public_holiday',
+            holiday: 'holiday_name',
+            anomaly: 'is_anomaly',
+            labour_cost: 'labour_cost_pct',
+            labor_cost: 'labour_cost_pct',
+          }
+          let fixedSql = generatedSql
+          for (const [generic, actual] of Object.entries(columnMap)) {
+            fixedSql = fixedSql.replace(new RegExp(`\\b${generic}\\b`, 'gi'), actual)
+          }
+
+          rows = executeQuery(db, fixedSql)
           db.close()
         }
       }
     }
 
-    // Override answer if we got actual row data /
+    // Overrides the answer if rows are found
     if (rows.length > 0) {
       answer = formatAnswer(question, rows, generatedSql)
     } else if (!answer) {
@@ -212,7 +234,7 @@ async function queryNlq(req, res) {
   }
 }
 
-// Returns the recent query history for the user //
+// Returns the recent query history //
 async function getNlqHistory(req, res) {
   res.json({ history: queryHistory })
 }

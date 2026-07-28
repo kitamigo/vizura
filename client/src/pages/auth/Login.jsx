@@ -14,12 +14,9 @@ function Login() {
 
       const data = await login(email, password)
       
-      if (
-        data.user.role === 'employer' ||
-        data.user.role === 'employee'
-      ) {
+    
         navigate('/app/dashboard')
-      }
+      
 
     } catch (err) {
 
@@ -31,7 +28,7 @@ function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center h-[calc(100vh-64px)] mt-16 bg-stone-300">
+    <div className="flex items-center justify-center h-[calc(100vh-64px)] mt-16 bg-stone-300 dark:bg-slate-900 transition-colors duration-200">
       <LoginForm onSubmit={handleLogin} />
     </div>
   )
